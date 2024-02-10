@@ -1,0 +1,29 @@
+
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import ShowData from './showData';
+import HomePage from './homePage';
+import Login from './login';
+import Signup from './signup';
+
+
+const Stack = createStackNavigator();
+
+
+export const DataStack = () => {
+    return(
+    <Stack.Navigator>
+            <Stack.Screen name="SignIn" component={Signup} options={{ headerShown: false }}/>
+            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
+            <Stack.Screen name="HomePage" component={HomePage} options={{ headerShown: false }}/>
+            <Stack.Screen name="ShowData" component={ShowData} options={{ headerShown: false }}/>
+    </Stack.Navigator>
+    );
+}
+export default function HomeStack() {
+    return (
+        <NavigationContainer>
+            <DataStack />
+        </NavigationContainer>
+    );
+}
