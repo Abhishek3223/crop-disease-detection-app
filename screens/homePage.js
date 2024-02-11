@@ -1,14 +1,36 @@
 import { StyleSheet, Text, View, Image, Button } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
-
+import Ionicons from '@expo/vector-icons/Ionicons'
+import auth from '@react-native-firebase/auth';
 
 
 export default function HomePage() {
 
-const navigation = useNavigation();
+    const navigation = useNavigation();
+    const logout = async () => {
+        try {
+            await auth().signOut();
+
+            //reseting the vaigation stack to 0
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'SignIn' }],
+            })
+        }
+        catch(e) {
+            console.log("Error logging out: ", e)
+        }
+    }
     return (
         <View style={styles.container}>
+            <View style={styles.iconSection}>
+                <Ionicons style={styles.icon} name="log-out-outline" size={32} color="green"
+                    onPress={() => {
+                        logout()
+                    }}
+                />
+            </View>
             <View>
                 <Image
                     style={styles.plantImage}
@@ -57,5 +79,13 @@ const styles = StyleSheet.create({
         width: 40,
         borderRadius: 20,
         color: '#50c878'
+    },
+    // icon: {
+    //     justifyContent:'space-between'
+    // },
+    iconSection: {
+        justifyContent: 'flex-end',
+        alignSelf: 'flex-end',
+        padding: 10
     }
 });

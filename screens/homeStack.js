@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import ShowData from './showData';
 import HomePage from './homePage';
-import Login from './login';
+import UserInfo from './userInfo';
 import Signup from './signup';
 
 
@@ -14,7 +14,7 @@ export const DataStack = () => {
     return(
     <Stack.Navigator>
             <Stack.Screen name="SignIn" component={Signup} options={{ headerShown: false }}/>
-            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
+            <Stack.Screen name="User_Info" component={UserInfo} options={{ headerShown: false }}/>
             <Stack.Screen name="HomePage" component={HomePage} options={{ headerShown: false }}/>
             <Stack.Screen name="ShowData" component={ShowData} options={{ headerShown: false }}/>
     </Stack.Navigator>

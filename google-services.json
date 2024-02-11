@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "825803484473",
+    "project_id": "crop-diseases-detection",
+    "storage_bucket": "crop-diseases-detection.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:825803484473:android:da1574581ca56024a74ce8",
+        "android_client_info": {
+          "package_name": "com.vaibhavi_11.ReactNative"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTkE1KWuQ1Lo60KtWhtj2qapPmA11tEuE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
