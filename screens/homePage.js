@@ -3,15 +3,16 @@ import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons'
 import auth from '@react-native-firebase/auth';
-
+import { useAuth } from './context';
 
 export default function HomePage() {
 
+    const { setUser } = useAuth();
     const navigation = useNavigation();
     const logout = async () => {
         try {
             await auth().signOut();
-
+            setUser(null);
             //reseting the vaigation stack to 0
             navigation.reset({
                 index: 0,

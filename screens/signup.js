@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import { useAuth } from './context';
 
 
 export default function Signup() {
@@ -12,8 +13,8 @@ export default function Signup() {
     const [code, setCode] = React.useState('')
     const [isLogin, setLogin] = React.useState(false);
     const [confirm, setConfirm] = React.useState(null);
-
     const navigation = useNavigation();
+    const {setUser} = useAuth();
 
     async function signInWithPhoneNumber() {
         try {
@@ -29,10 +30,10 @@ export default function Signup() {
         try {
             const userCredential = await confirm.confirm(code);
             const user = userCredential.user;
-
             //check if user is new or existing
             const userDocument = await firestore().collection('users').doc(user.uid).get();
             if (userDocument.exists) {
+                setUser(userDocument.data());
                 navigation.reset({
                     index: 0,
                     routes: [{ name: 'HomePage' }],

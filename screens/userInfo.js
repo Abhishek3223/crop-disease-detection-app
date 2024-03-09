@@ -2,21 +2,29 @@ import { Text, View, Image, Button, StyleSheet, TextInput } from 'react-native';
 import React from 'react';
 import { Picker } from '@react-native-picker/picker';
 import firestore from '@react-native-firebase/firestore';
+import { useAuth } from './context';
 
 export default function UserInfo({ route, navigation }) {
 
     const [username, setUsername] = React.useState('');
     const [cropType, setCropType] = React.useState('');
+    const [userType, setUserType] = React.useState('');
     const { uid } = route.params;
     const crops = ["Maize", "Rice", "Wheat", "Bajra"]
-
+    const { user } = useAuth();
+    const {setUser}=useAuth();
     function saveDetails() {
         try{
             firestore().collection('users').doc(uid).set({
                 username: username,
+                userType: userType,
                 cropType: cropType
             })  
-            navigation.navigate('HomePage');
+            setUser({uid: uid, userType: userType, cropType: cropType, username: username});
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'HomePage' }],
+            })
         }
         catch(e){
             console.log("Error saving details: ", e);
@@ -35,6 +43,18 @@ export default function UserInfo({ route, navigation }) {
                     keyboardType="default"
                     importantForAccessibility='yes'
                 />
+                <Picker
+                style={styles.select}
+                    selectedValue={userType}
+                    onValueChange={(itemValue, itemIndex) =>
+                        setUserType(itemValue)
+                    }
+                    importantForAccessibility='yes'
+                    >
+                    <Picker.Item label="User Type" style={styles.Item} value="" enabled={false} />
+                    <Picker.Item label="Farmer"  value="Farmer"  />
+                    <Picker.Item label="Expert"  value="Expert"  />
+                </Picker>
                 <Picker
                 style={styles.select}
                     selectedValue={cropType}
