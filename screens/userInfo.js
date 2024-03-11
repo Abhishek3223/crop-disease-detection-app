@@ -15,10 +15,10 @@ export default function UserInfo({ route, navigation }) {
     function saveDetails(uid) {
         try{
             firestore().collection('users').doc(uid).set({
+                uid: uid,
                 username: username,
                 userType: userType,
-                cropType: cropType,
-                photos: []
+                cropType: cropType
             })
             setUser({uid: uid, userType: userType, cropType: cropType, username: username});
             navigation.reset({

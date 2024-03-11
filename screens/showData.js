@@ -10,30 +10,37 @@ export default function ShowData() {
     const [images, setImages] = React.useState([]);
 
     React.useEffect(() => {
-        const fetchUser = async () => {
+        const fetchUserPhotos = async () => {
             try {
-                const usersSnapshot = await firestore().collection('users').doc(user.username).get();
-                const userData = usersSnapshot.data();
-                const userPhotos = userData.photos || []; // Ensure photos array exists
+                const photosSnapshot = await firestore()
+                    .collection('photos')
+                    .where('userId', '==', user.uid)
+                    .get();
+                const userPhotos = []; // Initialize an array to store photos
+                photosSnapshot.forEach(doc => {
+                    // Push the document data to the userPhotos array
+                    userPhotos.push(doc.data());
+                });
                 setImages(userPhotos); // Set the images state with the photos array
                 isLoading(false);
             } catch (e) {
-                console.log("Error getting user data: ", e);
+                console.log("Error getting user photos: ", e);
             }
         };
-        fetchUser();
+        
+        fetchUserPhotos();
     }, []);
 
     return (
         <ScrollView>
             <View style={styles.container}>
-                {images.map((photoUri, index) => ( // Map over the images array
+                {images.map((photoData, index) => (
                     <Card key={index}>
-                        <Card.Title>Image {index + 1}</Card.Title>
+                        <Card.Title>{photoData.cropName}</Card.Title>
                         <Card.Divider/>
                         <Card.Image
                             style={{padding: 0}}
-                            source={{ uri: photoUri }} // Set the source of the image
+                            source={{ uri: photoData.photoUri }} // Set the source of the image
                         />
                         <Text style={{marginBottom: 10}}>
                             The idea with React Native Elements is more about component structure than actual design.

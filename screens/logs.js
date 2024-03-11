@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Image, ScrollView} from 'react-native';
 import { Text, Card, Button, Icon } from '@rneui/themed';
 import firestore from '@react-native-firebase/firestore';
+import { useAuth } from './context';
 export default function Logs() {
 
     const [loading, isLoading]=React.useState(true);
@@ -10,13 +11,13 @@ export default function Logs() {
     React.useEffect(()=>{
         const fetchUsers=async()=>{
         try{
-            const usersSnapshot= await firestore().collection('users').get();
+            const usersSnapshot= await firestore().collection('photos').get();
             const usersList= usersSnapshot.docs.map(doc=>({
                 id: doc.id,
                 ...doc.data()
             }));
             setUsers(usersList);
-            console.log("Users: ", users);
+            console.log("Userslist: ", usersList);
             isLoading(false);
         }
         catch(e){
@@ -31,12 +32,12 @@ export default function Logs() {
         <View style={styles.container}>
             {users.map((user, index)=>(
                     <Card key={index}>
-                        <Card.Title>{user.username}</Card.Title>
+                        <Card.Title>{user.cropName}</Card.Title>
                         <Card.Divider/>
                         <Card.Image
                             style={{padding: 0}}
                             source={{
-                                uri: user.photo // Replace this with the actual photo
+                                uri: user.photoUri // Replace this with the actual photo
                             }}
                         />
                         <Text style={{marginBottom: 10}}>

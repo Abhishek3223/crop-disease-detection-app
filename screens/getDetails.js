@@ -2,41 +2,34 @@ import React from 'react';
 import { View, StyleSheet, Image, Text, TextInput, Button } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import { useAuth } from './context';
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function GetDetails({ route }) {
-    
-    const {user, setUser} = useAuth();
-    const photo = route.params.photo;   // Extract the photo from the route parameters
+    const { user, setUser } = useAuth();
+    const photo = route.params.photo;
     const [name, setName] = React.useState('');
     const navigation = useNavigation();
 
     const handleClick = async () => {
-        console.log(user);
-        console.log("photo", photo.uri);
         try {
-            const userDocRef = firestore().collection('users').doc(user.username);
-        const userDoc = await userDocRef.get();
-        const userData = userDoc.data();
-        const currentPhotos = userData.photos || [];
-
-        // Add the new photo URI to the array
-        const updatedPhotos = [...currentPhotos, photo.uri];
-
-        // Update Firestore with the updated array of photos
-        await userDocRef.update({
-            photos: updatedPhotos
-        });
-            setUser({ ...user, photos: updatedPhotos });
+            console.log("user",user)
+            // Create a new document in the "photos" collection
+            console.log("routeparams", route.params);
+            await firestore().collection('photos').doc(photo.id).set({
+                userId: user.uid, // Assuming userId is available in the user object
+                postId: photo.id, // You need to get the postId from somewhere in your app
+                photoUri: photo.uri,
+                cropName: name // Add the crop name
+            });
             navigation.navigate('ShowData');
         } catch (e) {
-            console.log("Error adding user: ", e);
+            console.log("Error adding photo: ", e);
         }
     }
 
     return (
         <View style={styles.container}>
-            {/* Render the image */}
             <View>
                 <Text style={styles.header}>Your image is ready to be Inspected👩‍🔬!</Text>
                 <View style={styles.card}>
@@ -44,11 +37,11 @@ export default function GetDetails({ route }) {
                     <TextInput
                         style={styles.input}
                         value={name}
-                        onChangeText={onChangeText = (text) => { setName(text) }}
+                        onChangeText={text => setName(text)}
                         placeholder="Enter the name of the crop"
                         keyboardType="default"
                     />
-                    <Button title="submit" color="#50c878" style={styles.button} onPress={ handleClick } />
+                    <Button title="submit" color="#50c878" style={styles.button} onPress={handleClick} />
                 </View>
             </View>
         </View>
@@ -70,8 +63,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     image: {
-        width: 250, // Set the width to fill the container
-        height: 200, // Set the height to fill the container
+        width: 250,
+        height: 200,
     },
     header: {
         paddingVertical: 25,

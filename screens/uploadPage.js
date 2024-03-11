@@ -3,9 +3,11 @@ import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Alert, ImageBackground, Image } from 'react-native'
 import { Camera } from 'expo-camera'
 import { useIsFocused, useNavigation } from '@react-navigation/native'
+import uuid  from 'react-native-uuid';
 
 
 export default function App() {
+    const myUuid = uuid.v4();
     const camera = React.useRef();
     const navigation = useNavigation();
 
@@ -41,11 +43,12 @@ export default function App() {
         setStartCamera(false);
     };
     const __takePicture = async () => {
+        const photoId = uuid.v4(); // Generate a UUID for the photo
         const photo = await camera.current.takePictureAsync()
         console.log(photo)
         setPreviewVisible(true)
         //setStartCamera(false)
-        setCapturedImage(photo)
+        setCapturedImage({...photo, id:photoId})
     }
     const __savePhoto = () => {
         navigation.navigate('Details', { photo: capturedImage })
