@@ -11,15 +11,15 @@ export default function UserInfo({ route, navigation }) {
     const [userType, setUserType] = React.useState('');
     const { uid } = route.params;
     const crops = ["Maize", "Rice", "Wheat", "Bajra"]
-    const { user } = useAuth();
-    const {setUser}=useAuth();
-    function saveDetails() {
+    const { setUser } = useAuth();
+    function saveDetails(uid) {
         try{
             firestore().collection('users').doc(uid).set({
                 username: username,
                 userType: userType,
-                cropType: cropType
-            })  
+                cropType: cropType,
+                photos: []
+            })
             setUser({uid: uid, userType: userType, cropType: cropType, username: username});
             navigation.reset({
                 index: 0,
@@ -72,7 +72,7 @@ export default function UserInfo({ route, navigation }) {
                 <Button
                     title="Ready to go"
                     color="#50c878"
-                    onPress={() => { saveDetails()}}
+                    onPress={() => { saveDetails(uid)}}
                 />
             </View>
         </View>

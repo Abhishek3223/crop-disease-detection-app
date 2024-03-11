@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Alert, ImageBackground, Image
 import { Camera } from 'expo-camera'
 import { useIsFocused, useNavigation } from '@react-navigation/native'
 
+
 export default function App() {
     const camera = React.useRef();
     const navigation = useNavigation();
@@ -13,6 +14,7 @@ export default function App() {
     const [capturedImage, setCapturedImage] = React.useState(null)
     const [cameraType, setCameraType] = React.useState(Camera.Constants.Type.back)
     const [flashMode, setFlashMode] = React.useState('off')
+   
 
     const isFocused = useIsFocused();
     React.useEffect(() => {

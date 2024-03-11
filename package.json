@@ -17,6 +17,7 @@
     "@react-navigation/bottom-tabs": "^6.5.12",
     "@react-navigation/native": "^6.1.10",
     "@react-navigation/stack": "^6.3.21",
+    "@rneui/themed": "^4.0.0-rc.8",
     "expo": "~50.0.6",
     "expo-camera": "~14.0.4",
     "expo-constants": "~15.4.5",

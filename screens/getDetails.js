@@ -1,13 +1,37 @@
 import React from 'react';
 import { View, StyleSheet, Image, Text, TextInput, Button } from 'react-native';
+import firestore from '@react-native-firebase/firestore';
+import { useAuth } from './context';
+import { useNavigation } from '@react-navigation/native'
 
 export default function GetDetails({ route }) {
-    // Extract the photo from the route parameters
-    const photo = route.params.photo;
+    
+    const {user, setUser} = useAuth();
+    const photo = route.params.photo;   // Extract the photo from the route parameters
     const [name, setName] = React.useState('');
+    const navigation = useNavigation();
 
-    function handleClick() {
-        console.log(name);
+    const handleClick = async () => {
+        console.log(user);
+        console.log("photo", photo.uri);
+        try {
+            const userDocRef = firestore().collection('users').doc(user.username);
+        const userDoc = await userDocRef.get();
+        const userData = userDoc.data();
+        const currentPhotos = userData.photos || [];
+
+        // Add the new photo URI to the array
+        const updatedPhotos = [...currentPhotos, photo.uri];
+
+        // Update Firestore with the updated array of photos
+        await userDocRef.update({
+            photos: updatedPhotos
+        });
+            setUser({ ...user, photos: updatedPhotos });
+            navigation.navigate('ShowData');
+        } catch (e) {
+            console.log("Error adding user: ", e);
+        }
     }
 
     return (
@@ -24,7 +48,7 @@ export default function GetDetails({ route }) {
                         placeholder="Enter the name of the crop"
                         keyboardType="default"
                     />
-                    <Button title="submit" color="#50c878" style={styles.button} onPress={() => { handleClick() }} />
+                    <Button title="submit" color="#50c878" style={styles.button} onPress={ handleClick } />
                 </View>
             </View>
         </View>
