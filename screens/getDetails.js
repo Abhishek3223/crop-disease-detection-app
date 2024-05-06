@@ -1,37 +1,66 @@
 import React from 'react';
-import { View, StyleSheet, Image, Text, TextInput, Button } from 'react-native';
-import firestore from '@react-native-firebase/firestore';
+import { View, StyleSheet, Image, Text, TextInput, Button, Alert } from 'react-native';
 import { useAuth } from './context';
 import { useNavigation } from '@react-navigation/native';
-
+import firestore from '@react-native-firebase/firestore';
+import { firebase } from '@react-native-firebase/auth';
 
 export default function GetDetails({ route }) {
-    const { user, setUser } = useAuth();
+    const { user } = useAuth();
     const photo = route.params.photo;
     const [name, setName] = React.useState('');
     const navigation = useNavigation();
 
     const handleClick = async () => {
         try {
-            console.log("user",user)
-            // Create a new document in the "photos" collection
-            console.log("routeparams", route.params);
-            await firestore().collection('photos').doc(photo.id).set({
-                userId: user.uid, // Assuming userId is available in the user object
-                postId: photo.id, // You need to get the postId from somewhere in your app
-                photoUri: photo.uri,
-                cropName: name // Add the crop name
+            console.log(photo)
+            const formData = new FormData();
+            formData.append('image', {
+                uri: photo.uri,
+                type: 'image/jpeg', // or whatever the MIME type of your image is
+                name: 'photo.jpg' // or any name you want to give to the file
             });
-            navigation.navigate('ShowData');
-        } catch (e) {
-            console.log("Error adding photo: ", e);
+
+            const response = await fetch('http://192.168.156.55:5000/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                body: formData,
+            });
+            const data = await response.json();
+            console.log(data);
+
+            // Handle response from Flask server
+            // For example, you can display a success message
+            const cropNames = ['common rust', 'grey leaf spot', 'healthy', 'northern leaf blight'];
+            const prediction = [];
+            data.prediction.forEach((value, index) => {
+                if (value === 1 && cropNames[index]) {
+                    prediction.push(cropNames[index]);
+                }
+            });
+
+            console.log(prediction);
+            firebase.firestore().collection('photos').doc(photo.id).set({
+                userId: user.uid,
+                photoUri: photo.uri,
+                postId: photo.id,
+                cropName: name,
+                prediction: prediction,
+            });
+            Alert.alert('Success', 'Image submitted successfully', [{ text: 'OK', onPress: () => navigation.navigate('ShowData') }]);
+        } catch (error) {
+            console.error('Error submitting data:', error);
+            // Handle error
+            Alert.alert('Error', 'An error occurred while submitting image', [{ text: 'OK' }]);
         }
-    }
+    };
 
     return (
         <View style={styles.container}>
             <View>
-                <Text style={styles.header}>Your image is ready to be Inspected👩‍🔬!</Text>
+                <Text style={styles.header}>Your image is ready to be Inspectedr👩‍🔬!</Text>
                 <View style={styles.card}>
                     <Image source={{ uri: photo && photo.uri }} style={styles.image} />
                     <TextInput
@@ -41,7 +70,7 @@ export default function GetDetails({ route }) {
                         placeholder="Enter the name of the crop"
                         keyboardType="default"
                     />
-                    <Button title="submit" color="#50c878" style={styles.button} onPress={handleClick} />
+                    <Button title="Submit" color="#50c878" onPress={handleClick} />
                 </View>
             </View>
         </View>
@@ -81,8 +110,4 @@ const styles = StyleSheet.create({
         padding: 10,
         width: 200
     },
-    button: {
-        width: 30,
-        borderRadius: 20,
-    }
 });

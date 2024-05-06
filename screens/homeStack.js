@@ -5,6 +5,8 @@ import ShowData from './showData';
 import HomePage from './homePage';
 import UserInfo from './userInfo';
 import Signup from './signup';
+import Comments from './comments';
+import DroneData from './droneData';
 
 
 const Stack = createStackNavigator();
@@ -17,6 +19,8 @@ export const DataStack = () => {
             <Stack.Screen name="User_Info" component={UserInfo} options={{ headerShown: false }}/>
             <Stack.Screen name="HomePage" component={HomePage} options={{ headerShown: false }}/>
             <Stack.Screen name="ShowData" component={ShowData} options={{ headerShown: false }}/>
+            <Stack.Screen name="Comments" component={Comments} options={{ headerShown: false }}/>
+            <Stack.Screen name="DroneData" component={DroneData} options={{ headerShown: false }}/>
     </Stack.Navigator>
     );
 }

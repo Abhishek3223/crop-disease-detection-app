@@ -5,9 +5,9 @@ import ProfilePage from './screens/profilePage';
 import { DataStack } from './screens/homeStack';
 import { UploadStack } from './screens/camStack';
 import { Ionicons } from '@expo/vector-icons';
-import Logs from './screens/logs';
 import React from 'react';
 import { AuthProvider, useAuth } from './screens/context';
+import {CommentStack} from './screens/logsStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -26,9 +26,9 @@ const MainTabs = () => {
         {user && ( // Conditionally render the "Logs" tab
           <>
           {user.userType === "Expert" && (
-            <Tab.Screen name="Logs" component={Logs} options={{
+            <Tab.Screen name="Posts" component={CommentStack} options={{
               tabBarIcon: ({ color, size }) => (
-                <Ionicons name="camera-outline" color="#50c878" size={size} /> // Change the name to the desired icon
+                <Ionicons name="people-outline" color="#50c878" size={size} /> // Change the name to the desired icon
               ),
             }} />
           )}

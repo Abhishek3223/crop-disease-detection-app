@@ -3,11 +3,17 @@ import React from 'react';
 import { Card, Button, Icon } from '@rneui/themed'; // Import Card and Button components
 import { useAuth } from './context';
 import firestore from '@react-native-firebase/firestore';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
+import { Dimensions } from 'react-native';
+
+const windowWidth = Dimensions.get('window').width;
 
 export default function ShowData() {
     const { user } = useAuth();
     const [loading, isLoading] = React.useState(true);
     const [images, setImages] = React.useState([]);
+    const navigation = useNavigation();
 
     React.useEffect(() => {
         const fetchUserPhotos = async () => {
@@ -27,7 +33,7 @@ export default function ShowData() {
                 console.log("Error getting user photos: ", e);
             }
         };
-        
+
         fetchUserPhotos();
     }, []);
 
@@ -37,30 +43,25 @@ export default function ShowData() {
                 {images.map((photoData, index) => (
                     <Card key={index}>
                         <Card.Title>{photoData.cropName}</Card.Title>
-                        <Card.Divider/>
+                        <Card.Divider />
                         <Card.Image
-                            style={{padding: 0}}
+                            style={{ padding: 0 }}
                             source={{ uri: photoData.photoUri }} // Set the source of the image
                         />
-                        <Text style={{marginBottom: 10}}>
-                            The idea with React Native Elements is more about component structure than actual design.
+                        <Text style={styles.text}>
+                            Result: {photoData.prediction ? photoData.prediction.join(', ') : 'No prediction available'}
                         </Text>
-                        <Button
-                            icon={
-                                <Icon
-                                    name="code"
-                                    color="#ffffff"
-                                    iconStyle={{marginRight: 10}}
-                                />
-                            }
-                            buttonStyle={{
-                                borderRadius: 0,
-                                marginLeft: 0,
-                                marginRight: 0,
-                                marginBottom: 0
-                            }}
-                            title="VIEW NOW"
-                        />
+
+                        <View style={styles.commentSection}>
+
+                            <Ionicons
+                                name="chatbox-ellipses-outline"
+                                color="#50c878"
+                                size={32}
+                                iconStyle={{ alignItems: 'center' }}
+                                onPress={() => navigation.navigate('Comments', { postId: photoData.id, comments: photoData.comments })}
+                            />
+                        </View>
                     </Card>
                 ))}
             </View>
@@ -82,6 +83,12 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 16,
-        margin: 20
+        paddingVertical: 10,
+        fontWeight: 400,
+        width: windowWidth * 0.8
+    },
+    card: {
+        display: 'flex',
+        alignItems: 'center',
     }
 });

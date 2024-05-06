@@ -7,31 +7,20 @@ import { useAuth } from './context';
 
 export default function HomePage() {
 
-    const { setUser } = useAuth();
+    const { user } = useAuth();
     const navigation = useNavigation();
-    const logout = async () => {
-        try {
-            await auth().signOut();
-            setUser(null);
-            //reseting the vaigation stack to 0
-            navigation.reset({
-                index: 0,
-                routes: [{ name: 'SignIn' }],
-            })
+
+    const handleClick=()=>{
+        if(user.userType=='Expert'){
+            navigation.navigate('Logs')
         }
-        catch(e) {
-            console.log("Error logging out: ", e)
+        else{
+            navigation.navigate('ShowData')
         }
     }
+    
     return (
         <View style={styles.container}>
-            <View style={styles.iconSection}>
-                <Ionicons style={styles.icon} name="log-out-outline" size={32} color="green"
-                    onPress={() => {
-                        logout()
-                    }}
-                />
-            </View>
             <View>
                 <Image
                     style={styles.plantImage}
@@ -44,11 +33,20 @@ export default function HomePage() {
             <View style={styles.btnSection}>
                 <Button
                     style={styles.btn}
-                    onPress={() => { navigation.navigate('ShowData') }}
+                    onPress={handleClick}
                     title="Get Farm"
                     color="#50c878"
                     accessibilityLabel="Learn more about this purple button"
                 />
+                <View style={styles.droneButton}>
+                <Button
+                    style={styles.btn}
+                    onPress={() => {navigation.navigate('DroneData')}}
+                    title="Connect to Drone"
+                    color="#50c878"
+                    accessibilityLabel="Learn more about this purple button"
+                />
+                </View>
             </View>
         </View>
     );
@@ -73,7 +71,7 @@ const styles = StyleSheet.create({
     btnSection: {
         width: 200,
         paddingVertical: 20,
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
     },
     btn: {
@@ -88,5 +86,8 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignSelf: 'flex-end',
         padding: 10
+    },
+    droneButton: {
+        marginTop: 20
     }
 });
